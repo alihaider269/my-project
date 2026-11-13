@@ -17,13 +17,13 @@ var model=gltf.scene;sc.add(model);
 var nd={};model.traverse(function(o){nd[o.name]=o});
 /* face artwork: upscale the 90x100 texture smoothly and show it unlit with a clean alpha cut-out */
 var fm=null;model.traverse(function(o){if(o.isMesh&&o.material&&o.material.map&&o.material.map.image)fm=o});
-if(fm){var c=fm.material.map.image;for(var k=0;k<3;k++){var n=document.createElement('canvas');n.width=c.width*2;n.height=c.height*2;var x=n.getContext('2d');x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';x.drawImage(c,0,0,n.width,n.height);c=n}
+if(fm)try{var c=fm.material.map.image;for(var k=0;k<3;k++){var n=document.createElement('canvas');n.width=c.width*2;n.height=c.height*2;var x=n.getContext('2d');x.imageSmoothingEnabled=true;x.imageSmoothingQuality='high';x.drawImage(c,0,0,n.width,n.height);c=n}
 var tx=new T.CanvasTexture(c);tx.colorSpace=T.SRGBColorSpace;tx.anisotropy=ren.capabilities.getMaxAnisotropy();tx.generateMipmaps=true;tx.minFilter=T.LinearMipmapLinearFilter;tx.magFilter=T.LinearFilter;
 /* wrap the artwork around the head like a dome instead of a flat card, and light it like the rest of the body */
 var gx=new T.PlaneGeometry(.764,.82,40,40),pa=gx.attributes.position;
 for(var i=0;i<pa.count;i++){var x=pa.getX(i),y=pa.getY(i)+.295,u=x/.42,v=(y-.25)/.5,q=1-u*u-v*v;pa.setXYZ(i,x,y,.31*Math.sqrt(Math.max(.015,q)))}
 gx.computeVertexNormals();fm.geometry=gx;
-fm.material=new T.MeshStandardMaterial({map:tx,roughness:.65,metalness:0,emissive:0xffffff,emissiveMap:tx,emissiveIntensity:.4,side:T.DoubleSide,alphaTest:.5,alphaToCoverage:true,transparent:false});fm.renderOrder=2}
+fm.material=new T.MeshStandardMaterial({map:tx,roughness:.65,metalness:0,emissive:0xffffff,emissiveMap:tx,emissiveIntensity:.4,side:T.DoubleSide,alphaTest:.5,alphaToCoverage:true,transparent:false});fm.renderOrder=2}catch(fe){if(window.console)console.warn('GWB face',fe)}
 var box=new T.Box3().setFromObject(model),size=box.getSize(new T.Vector3()),ctr=box.getCenter(new T.Vector3());
 var cam=new T.PerspectiveCamera(28,1,.1,100);
 function fit(){var w=mas.clientWidth||300,h=mas.clientHeight||330;ren.setPixelRatio(Math.min(window.devicePixelRatio||1,window.innerWidth<820?1.5:2));ren.setSize(w,h,false);cam.aspect=w/h;var tf=Math.tan(cam.fov*Math.PI/360);var dist=Math.max(size.y*1.06/2/tf,size.x*1.9/2/(tf*cam.aspect))+size.z/2;cam.position.set(0,ctr.y,dist);cam.lookAt(0,ctr.y,0);cam.updateProjectionMatrix()}
@@ -43,5 +43,5 @@ aL+=(wL-aL)*.08;aR+=(wR-aR)*.08;fL+=(fLw-fL)*.1;fR+=(fRw-fR)*.1;
 aLn.rotation.set(0,0,aL);aRn.rotation.set(0,0,aR);iL.rotation.set(0,0,fL);iR.rotation.set(0,0,fR);
 ren.render(sc,cam)};
 mas.classList.add('rdy');S.on(0,S.W/2+1,S.H*.8);
-}catch(e){if(window.console)console.warn('GWB mascot 3D failed',e)}})();
+}catch(e){var cp=document.getElementById('gwb-cap');if(cp)cp.textContent='3D error: '+String(e&&e.message||e).slice(0,70);if(window.console)console.warn('GWB mascot 3D failed',e)}})();
 })();
