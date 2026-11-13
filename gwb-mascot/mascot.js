@@ -1,4 +1,5 @@
 (function(){
+[].slice.call(document.querySelectorAll('#gwb-stage .orb')).forEach(function(a){a.setAttribute('href','/collections/redragon')});
 var S=window.GWBS,mas=document.getElementById('gwb-mas'),cv=document.getElementById('gwb-cv');
 if(!S||!cv)return;
 var V='0.160.0',U=['https://cdn.jsdelivr.net/gh/alihaider269/my-project@main/gwb-mascot/Bill_Redragon_Animated.glb','https://raw.githubusercontent.com/alihaider269/my-project/main/gwb-mascot/Bill_Redragon_Animated.glb'];
